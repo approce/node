@@ -1,5 +1,11 @@
+var fs = require('fs');
+
 module.exports = {
     save: function (data) {
-        console.log('Saving: ' + data);
+        fs.appendFile('../messages.log', JSON.stringify(data) + '\n', function (err) {
+            if (err) {
+                console.log("Error while saving message to file. Message: " + data + "\n Error: \n" + err);
+            }
+        });
     }
 };

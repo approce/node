@@ -1,9 +1,9 @@
 var repository = require('./repository');
-var controller = require('../routes/controller');
+var controller = require('../outRoutes/outController');
 
 module.exports = {
     processMessage: function (message) {
         repository.save(message);
-        controller.sendMessage(message);
+        controller.pushMessage(message);
     }
 };
