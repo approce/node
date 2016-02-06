@@ -7,6 +7,9 @@ var bodyParser   = require('body-parser');
 var main         = require('./service/main');
 var app          = express();
 var config       = require('./config.json')[app.get('env')];
+var log          = require('winston');
+
+log.level = config.logLevel;
 
 main();
 // view engine setup
