@@ -40,7 +40,7 @@ module.exports = function (numberListener, messageListener) {
                 return {
                     sim_id    : number,
                     originator: sms.sender,
-                    recieved  : sms.time,
+                    received  : sms.time,
                     text      : sms.text
                 };
             }
