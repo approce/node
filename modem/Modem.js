@@ -1,19 +1,17 @@
-var modem      = require('modem').Modem();
-var ussd       = require('./ussd');
-module.exports = {
-    number: null,
-    start : function (port, initCommand, numberListener, messageListener) {
+var modem = require('modem').Modem();
+var ussd  = require('./ussd');
 
+module.exports = function (numberListener, messageListener) {
+    var number;
+
+    return function (port, initCommand) {
         modem.open(port, function () {
-            var number;
+
             modem.on('sms received', function (sms) {
-                console.log(sms.text);
-                console.log('filtered: ' + sms.text.replace(/\0/g, ''));
-                messageListener({
-                    sim_id    : number,
-                    originator: sms.sender,
-                    recieved  : sms.time,
-                    text      : sms.text.replace(/\0/g, '')
+                var message = createMessage(sms);
+                messageListener(number, message);
+                deleteMessages(function (i) {
+                    return i == sms.indexes[0];
                 });
             });
 
@@ -22,25 +20,30 @@ module.exports = {
                 numberListener(num);
             });
 
-            modem.getMessages(function (messages) {
-                messages.forEach(function (item, i) {
-                    modem.deleteMessage(i, function () {
-                    })
-                })
-            });
-
             modem.on('memory full', function () {
-                console.error('Memory Full!!');
-
-                modem.getMessages(function (messages) {
-                    messages.forEach(function (item, i) {
-                        modem.deleteMessage(i, function () {
-                        })
-                    })
-                })
+                console.error('Memory Full! Deleting first 5 messages');
+                deleteMessages(function (i) {
+                    return i < 5;
+                });
             });
 
+            function createMessage(number, sms) {
+                sms.text = sms.text.replace(/\0/g, '');
+                return {
+                    sim_id    : number,
+                    originator: sms.sender,
+                    recieved  : sms.time,
+                    text      : sms.text
+                };
+            }
 
+            function deleteMessages(cause) {
+                modem.getMessages(function (array) {
+                    array.forEach(function (item, i) {
+                        cause(i, item) ? modem.deleteMessage(i) : false;
+                    })
+                });
+            }
         });
     }
 };
