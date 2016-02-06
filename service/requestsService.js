@@ -1,5 +1,5 @@
-var controller = require('../outRoutes/outSocket');
-var outSocket  = require('../outRoutes/outSocket');
+var controller = require('../routes/outSocket');
+var outSocket  = require('../routes/outSocket');
 
 var requests       = [];
 var requestService = {

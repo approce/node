@@ -2,7 +2,7 @@ var log            = require('winston');
 var Modem          = require('../modem/Modem');
 var messageService = require('./messageService');
 var operator       = require('./operator');
-var outController  = require('../outRoutes/outSocket');
+var outController  = require('../routes/outSocket');
 var modemPort      = require('../properties').modemPort;
 
 module.exports = function () {

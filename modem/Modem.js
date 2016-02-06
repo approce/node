@@ -13,9 +13,9 @@ module.exports = function (numberListener, messageListener) {
                 var index = sms.indexes[0];
                 log.debug('New sms received. Index:', index);
 
-                var message = createMessage(sms);
+                var message = createMessage(number, sms);
 
-                messageListener(number, message);
+                messageListener(message);
 
                 deleteMessages(function (i) {
                     return i == index;
