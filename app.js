@@ -7,8 +7,12 @@ var bodyParser   = require('body-parser');
 var main         = require('./service/main');
 var app          = express();
 var config       = require('./config.json')[app.get('env')];
+var winston      = require('winston');
 
 main(config.modemPort);
+var level        = config.logLevel;
+console.log(level);
+winston.level    = 'silly';
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

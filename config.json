@@ -1,6 +1,7 @@
 {
   "development": {
     "port"     : 3002,
-    "modemPort": "/dev/tty.HUAWEIMobile-Pcui"
+    "modemPort": "/dev/tty.HUAWEIMobile-Pcui",
+    "logLevel" : "silly"
   }
 }

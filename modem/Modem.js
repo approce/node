@@ -1,3 +1,4 @@
+var log   = require('winston');
 var modem = require('modem').Modem();
 var ussd  = require('./ussd');
 
@@ -6,24 +7,31 @@ module.exports = function (numberListener, messageListener) {
 
     return function (port, initCommand) {
         modem.open(port, function () {
+            log.debug('Modem opened.');
 
             modem.on('sms received', function (sms) {
+                var index = sms.indexes[0];
+                log.debug('New sms received. Index:', index);
+
                 var message = createMessage(sms);
+
                 messageListener(number, message);
+
                 deleteMessages(function (i) {
-                    return i == sms.indexes[0];
+                    return i == index;
                 });
             });
 
             ussd.process(modem, initCommand, function (num) {
                 number = num;
-                numberListener(num);
+                numberListener(number);
             });
 
             modem.on('memory full', function () {
-                console.error('Memory Full! Deleting first 5 messages');
+                var count;
+                log.error('Memory Full! Deleting first %d messages', count);
                 deleteMessages(function (i) {
-                    return i < 5;
+                    return i < count;
                 });
             });
 
@@ -40,7 +48,10 @@ module.exports = function (numberListener, messageListener) {
             function deleteMessages(cause) {
                 modem.getMessages(function (array) {
                     array.forEach(function (item, i) {
-                        cause(i, item) ? modem.deleteMessage(i) : false;
+                        if (cause(i, item)) {
+                            log.debug('Deleting message. Index:', i);
+                            modem.deleteMessage(i);
+                        }
                     })
                 });
             }
