@@ -3,8 +3,9 @@ var Modem          = require('../modem/Modem');
 var messageService = require('./messageService');
 var operator       = require('./operator');
 var socket         = require('../outRoutes/outSocket')();
+var modemPort      = require('../properties').modemPort;
 
-module.exports = function (modemPort) {
+module.exports = function () {
     var number;
     var modem = new Modem(function (num) {
 

@@ -1,5 +1,5 @@
 var io        = require('socket.io-client');
-var serverUrl = require('../config.json').serverUrl;
+var serverUrl = require('../properties').serverUrl;
 
 module.exports = function () {
     var socket = io.connect(serverUrl, {reconnect: true});
