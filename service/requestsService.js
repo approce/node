@@ -1,6 +1,6 @@
-var log        = require('winston');
-var controller = require('../routes/outSocket');
-var outSocket  = require('../routes/outSocket');
+var log           = require('winston');
+var inController  = require('../routes/inController');
+var outController = require('../routes/outController');
 
 var requests = [];
 
@@ -13,7 +13,7 @@ function processMessage(msg) {
     requests.forEach(function (entry, i) {
         if (evaluateMessage(entry, msg)) {
             log.info('Request successfully processed.', entry, msg);
-            controller.send({
+            outController.send({
                 requestId: entry.id,
                 message  : msg
             });
@@ -34,6 +34,6 @@ var requestService = {
     process: processMessage
 };
 
-outSocket.onNewRequest(requestService.add);
+inController.onRequest(requestService.add);
 
 module.exports = requestService;

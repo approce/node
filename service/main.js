@@ -1,6 +1,7 @@
 var log            = require('winston');
 var modem          = require('../modem/Modem');
-var outController  = require('../routes/outSocket');
+var outController  = require('../routes/outController');
+var inController   = require('../routes/inController');
 var nodeId         = require('../properties').nodeId;
 var messageService = require('./messageService');
 
@@ -14,7 +15,7 @@ module.exports = function () {
 
     modem.start();
 
-    outController.onCommand(function (command) {
+    inController.onCommand(function (command) {
         if (command == "change sim") {
             log.info('Restarting modem.');
             modem.restart();
