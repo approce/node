@@ -1,7 +1,7 @@
 var log            = require('winston');
 var modem          = require('../modem/Modem');
-var operator       = require('./operator');
 var outController  = require('../routes/outSocket');
+var nodeId         = require('../properties').nodeId;
 var messageService = require('./messageService');
 
 module.exports = function () {
@@ -12,7 +12,7 @@ module.exports = function () {
         log.info('Initialized new SIM. Number:', num);
     });
 
-    modem.start(operator.getOperator().initCommand);
+    modem.start();
 
     outController.onCommand(function (command) {
         if (command == "change sim") {
@@ -21,5 +21,5 @@ module.exports = function () {
         }
     });
 
-    outController.connect({nodeId: 'Faith'});
+    outController.connect({nodeId: nodeId});
 };

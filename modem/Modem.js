@@ -1,7 +1,7 @@
 var log       = require('winston');
 var modem     = require('modem').Modem();
 var ussd      = require('./ussd');
-var modemPort = require('../properties').modemPort;
+var properties = require('../properties').modem;
 
 var number;
 var messageListener;
@@ -50,23 +50,23 @@ function memoryFull() {
     });
 }
 
-function startNumberDetecting(initCommand) {
+function startNumberDetecting() {
     log.debug('Start USSD command for detecting number.');
 
-    ussd.process(modem, initCommand, function (num) {
+    ussd.process(modem, properties.initCommand, function (num) {
         log.debug('Received response for USSD ression. ', num);
         number = num;
         numberListener(number);
     });
 }
 
-function start(initCommand) {
+function start() {
     log.debug('Creating modem connection.');
 
-    modem.open(modemPort, function () {
+    modem.open(properties.port, function () {
         log.debug('Modem connection successfully established.');
 
-        startNumberDetecting(initCommand);
+        startNumberDetecting();
         modem.on('sms received', newMessage);
         modem.on('memory full', memoryFull)
     });
@@ -85,12 +85,12 @@ function restart() {
         }
 
         log.debug('Stopping modem connection.');
-        modem.close(modemPort);
+        modem.close(properties.port);
 
         log.debug('Waiting %d seconds for new modem connection.', delay / 1000);
         setTimeout(function () {
             log.debug('Start new modem connection.');
-            this.start('*205#');
+            this.start();
         }.bind(this), delay);
 
     }.bind(this), true);
