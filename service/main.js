@@ -14,5 +14,12 @@ module.exports = function () {
 
     modem.start(operator.getOperator().initCommand);
 
+    outController.onCommand(function (command) {
+        if (command == "change sim") {
+            log.info('Restarting modem.');
+            modem.restart();
+        }
+    });
+
     outController.connect({nodeId: 'Faith'});
 };

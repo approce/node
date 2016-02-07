@@ -25,10 +25,7 @@ function processMessage(msg) {
         log.warn('Message (id:%s) matched to service was not matched to any request', msg.id);
     }
 }
-
-outSocket.onNewRequest(requestService.add);
-
-module.exports = {
+var requestService = {
 
     add: function (req) {
         requests.push(req);
@@ -36,3 +33,7 @@ module.exports = {
 
     process: processMessage
 };
+
+outSocket.onNewRequest(requestService.add);
+
+module.exports = requestService;

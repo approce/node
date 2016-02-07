@@ -5,7 +5,7 @@ module.exports = {
         return {
             id         : 1,
             name       : 'kyivstar ua',
-            initCommand: '*161#'
+            initCommand: '*205#'
         }
     }
 };

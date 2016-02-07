@@ -1,20 +1,35 @@
+var log     = require('winston');
 var session = require('modem').Ussd_Session();
 
-module.exports = {
-    process: function (modem, ussdCommand, callback) {
-        session.modem = modem;
+var response_timeout = 10000;
 
-        session.execute = function () {
-            session.query(ussdCommand, function (code, msg) {
-                var number = parseNumber(msg);
-                callback(number);
-            });
-        };
+function parseNumber(msg) {
+    return Math.max.apply(null, msg.match(/\d+/g));
+}
 
-        session.start();
+function process(modem, command, callback) {
+    session.modem = modem;
+    var number;
 
-        var parseNumber = function (msg) {
-            return Math.max.apply(null, msg.match(/\d+/g));
+    session.execute = function () {
+        session.query(command, function (code, response) {
+            number = parseNumber(response);
+            callback(number);
+        });
+    };
+
+    session.setTimeout(response_timeout);
+    session.on('timeout', function () {
+        if (!number) {
+            log.warn('Timeout on USSD query session.');
+            log.warn('Start new USSD query session.');
+            process(modem, command, callback);
         }
-    }
+    });
+
+    session.start();
+}
+
+module.exports = {
+    process: process
 };

@@ -12,6 +12,12 @@ module.exports = {
             log.debug('New request received.', req);
         });
     },
+    onCommand   : function (callback) {
+        socket.on('command', function (command) {
+            log.info('Received command from server.', command);
+            callback(command);
+        });
+    },
 
     connect: function (nodeInfo) {
         socket.on('connect', function () {
