@@ -4,8 +4,13 @@ var outController  = require('../routes/outController');
 var inController   = require('../routes/inController');
 var nodeId         = require('../properties').nodeId;
 var messageService = require('./messageService');
+var modemFinder    = require('../server/service/ModemFinder');
+
 
 module.exports = function () {
+    modemFinder.find('358811032781500', function (port) {
+        console.log(port);
+    });
     var number;
     modem.setNumberListener(function (num) {
         number = num;
@@ -13,7 +18,7 @@ module.exports = function () {
         log.info('Initialized new SIM. Number:', num);
     });
 
-    modem.start();
+    //modem.start();
 
     inController.onCommand(function (command) {
         if (command == "change sim") {
