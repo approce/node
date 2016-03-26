@@ -1,7 +1,7 @@
 var log            = require('winston');
 var repository     = require('./repository');
 var requestService = require('./requestsService');
-var modem          = require('../modem/Modem');
+var modem          = require('../server/modem/Modem');
 
 function detectMessageService(msg) {
     //TODO mockup.

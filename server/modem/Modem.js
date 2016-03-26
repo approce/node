@@ -1,7 +1,7 @@
 var log       = require('winston');
 var modem     = require('modem').Modem();
 var ussd      = require('./ussd');
-var properties = require('../properties').modem;
+var properties = require('../../properties').modem;
 
 var number;
 var messageListener;

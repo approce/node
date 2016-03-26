@@ -38,6 +38,7 @@ function tryPort(portInfo, imei, cb) {
 
     port.on('data', function (data) {
         data.toString().trim().split('\r').forEach(function (entry) {
+            console.log(entry);
             if (entry === imei) {
                 matched = true;
             }

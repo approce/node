@@ -1,5 +1,5 @@
 var log            = require('winston');
-var modem          = require('../modem/Modem');
+var modem          = require('../server/modem/Modem');
 var outController  = require('../routes/outController');
 var inController   = require('../routes/inController');
 var nodeId         = require('../properties').nodeId;
