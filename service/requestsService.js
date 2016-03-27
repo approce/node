@@ -1,5 +1,4 @@
 var log           = require('winston');
-var inController  = require('../routes/inController');
 var outController = require('../routes/outController');
 
 var requests = [];
@@ -33,7 +32,5 @@ var requestService = {
 
     process: processMessage
 };
-
-inController.onRequest(requestService.add);
 
 module.exports = requestService;

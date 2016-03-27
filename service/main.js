@@ -1,11 +1,8 @@
 var log           = require('winston');
 var Modem         = require('../server/modem/Modem');
 var outController = require('../routes/outController');
-var inController  = require('../routes/inController');
-var nodeId        = require('../properties').nodeId;
 var modemFinder   = require('../server/service/ModemFinder');
 var props         = require('../properties');
-var when          = require('when');
 var Promise       = require('promise');
 
 function start() {
@@ -13,25 +10,28 @@ function start() {
         var providerPromise  = outController.getProvider(node.provider);
         var modemPortPromise = modemFinder.find(node.modem);
 
-        Promise.all([providerPromise, modemPortPromise]).then(startModem);
+        Promise.all([providerPromise, modemPortPromise]).then(startModem.bind(null, node));
     });
 }
 
-function startModem(res) {
+function startModem(node, res) {
     var provider = res[0],
         port     = res[1],
         modem    = new Modem(port, provider.init_command);
 
     modem.start();
 
-    modem.on('c number detected', function () {
-        console.log(arguments);
+    modem.on('c number detected', function (simId) {
+        //initializing node sim on server:
+        outController.initSim(node.id, provider.id, simId).then(function () {
+            console.log('Node new sim have been successfully initialized on server');
+        });
     });
     modem.on('c sms received', function () {
+        //TODO push to server:
         console.log(arguments);
     })
 }
-
 
 module.exports = start;
 
