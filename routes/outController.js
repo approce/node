@@ -8,7 +8,8 @@ function connect(nodeInfo) {
 function update(number) {
 }
 
-function send(request) {
+function pushMessage(nodeId, message) {
+    return post('nodes/' + nodeId + '/messages', message);
 }
 
 function getProvider(providerId) {
@@ -26,17 +27,18 @@ function get(uri) {
     });
 }
 
-function post(uri) {
+function post(uri, body) {
     return request.post({
         uri : serverUrl + '/' + uri,
-        json: true
+        json: true,
+        body: body
     });
 }
 
 module.exports = {
     connect    : connect,
     update     : update,
-    send       : send,
+    pushMessage: pushMessage,
     getProvider: getProvider,
     initSim    : initSim
 };

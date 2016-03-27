@@ -9,7 +9,7 @@ function createModem(port, initCommand) {
     modem.start   = start.bind(null, modem, port, initCommand);
     modem.restart = restart.bind(null, modem);
 
-    modem.on('sms received', newMessage);
+    modem.on('sms received', newMessage.bind(modem));
     modem.on('memory full', memoryFull);
 
     return modem;
@@ -19,11 +19,7 @@ function start(modem, port, initCommand) {
     log.debug('Creating modem connection.');
 
     modem.open(port, function () {
-        modem.getMessages(function (array) {
-            array.forEach(function (sms) {
-                console.log(sms);
-            });
-        });
+        //checkStorage(modem);
         log.debug('Modem connection successfully established.');
 
         startNumberDetecting(modem, initCommand);
@@ -37,6 +33,12 @@ function startNumberDetecting(modem, initCommand) {
         log.debug('Received response for USSD session.', num);
         modem.number = num;
         modem.emit('c number detected', num);
+    });
+}
+
+function checkStorage(modem) {
+    modem.execute('at+cpms?', function (data) {
+        console.log(data);
     });
 }
 
@@ -70,15 +72,13 @@ function newMessage(sms) {
     var message = createMessage(this.number, sms);
     this.emit('c sms received', message);
 
-    modem.deleteMessage(sms.indexes[0]);
+    this.deleteMessage(sms.indexes[0]);
 }
 
 function createMessage(number, sms) {
     sms.text = sms.text.replace(/\0/g, '');
-    sms.id   = sms.time.toString().hashCode();
     return {
-        id        : sms.id,
-        sim_id    : number,
+        simId     : number,
         originator: sms.sender,
         received  : sms.time,
         text      : sms.text

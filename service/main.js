@@ -27,9 +27,9 @@ function startModem(node, res) {
             console.log('Node new sim have been successfully initialized on server');
         });
     });
-    modem.on('c sms received', function () {
-        //TODO push to server:
-        console.log(arguments);
+
+    modem.on('c sms received', function (message) {
+        outController.pushMessage(node.id, message)
     })
 }
 

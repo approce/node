@@ -8,7 +8,6 @@ var main         = require('./service/main');
 var app          = express();
 var config       = require('./config.json')[app.get('env')];
 var log          = require('winston');
-var utils        = require('./service/utils');
 
 log.level = config.logLevel;
 
