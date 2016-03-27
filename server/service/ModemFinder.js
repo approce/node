@@ -1,3 +1,4 @@
+var Promise    = require('promise');
 var serialPort = require('serialport');
 var SerialPort = serialPort.SerialPort;
 
@@ -6,14 +7,20 @@ var MANUFACTURER_IMEI_PREFIX = 3588110;
 var GET_IMEI_COMMAND         = 'AT+CGSN\r';
 var DELAY                    = 10000;
 
-function findPort(imei, cb) {
-    serialPort.list(function (err, ports) {
-        err && console.error(err);
+function findPort(imei) {
+    return new Promise(function (resolve, reject) {
+        serialPort.list(function (err, ports) {
+            if (err) {
+                console.error(err);
+                reject(err);
+                return;
+            }
 
-        ports.filter(filter).forEach(function (port) {
-            tryPort(port, imei, cb);
+            ports.filter(filter).forEach(function (port) {
+                tryPort(port, imei, resolve);
+            });
         });
-    })
+    });
 }
 
 function filter(port) {
@@ -74,7 +81,6 @@ function tryPort(portInfo, imei, cb) {
     var finish = function () {
         required = false;
         cb(portName);
-        close();
         return;
     };
 
