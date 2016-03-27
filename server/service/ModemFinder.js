@@ -48,6 +48,7 @@ function tryPort(portInfo, imei, cb) {
 
     port.on('data', function (data) {
         var datas = data.toString().trim().split('\r');
+        //console.log(portName + ': ' + datas[0]);
         datas.forEach(function (entry) {
 
             //starts with manufacturer imei:
@@ -79,6 +80,8 @@ function tryPort(portInfo, imei, cb) {
     });
 
     var finish = function () {
+        //console.log('matched: ' + portName);
+        port.close();
         required = false;
         cb(portName);
         return;

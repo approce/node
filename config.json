@@ -13,8 +13,9 @@
     },
     "nodes"    : [
       {
-        "name" : "Faith",
-        "modem": 36262309
+        "name"    : "Faith",
+        "provider": 2,
+        "modem"   : 36262309
       }
     ]
   }

@@ -3,10 +3,10 @@ var Modem        = require('modem').Modem;
 var log          = require('winston');
 var ussd         = require('./ussd');
 
-function createModem(port) {
+function createModem(port, initCommand) {
     var modem = Modem();
 
-    modem.start   = start.bind(null, modem, port);
+    modem.start   = start.bind(null, modem, port, initCommand);
     modem.restart = restart.bind(null, modem);
 
     modem.on('sms received', newMessage);
@@ -15,7 +15,7 @@ function createModem(port) {
     return modem;
 }
 
-function start(modem, port) {
+function start(modem, port, initCommand) {
     log.debug('Creating modem connection.');
 
     modem.open(port, function () {
@@ -26,15 +26,14 @@ function start(modem, port) {
         });
         log.debug('Modem connection successfully established.');
 
-        startNumberDetecting(modem);
+        startNumberDetecting(modem, initCommand);
     });
 }
 
-function startNumberDetecting(modem) {
+function startNumberDetecting(modem, initCommand) {
     log.debug('Start USSD session for number detection.');
 
-    //TODO properly get activation code
-    ussd.process(modem, "*205#", function (num) {
+    ussd.process(modem, initCommand, function (num) {
         log.debug('Received response for USSD session.', num);
         modem.number = num;
         modem.emit('c number detected', num);
