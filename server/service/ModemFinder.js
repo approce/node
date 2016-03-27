@@ -34,15 +34,13 @@ function tryPort(portInfo, imei, cb) {
     };
 
     port.on('open', function () {
-        port.write(GET_IMEI_COMMAND, function (err, resp) {
-            console.log(resp);
+        port.write(GET_IMEI_COMMAND, function (err) {
             err && console.error(err);
         })
     });
 
     port.on('data', function (data) {
         var datas = data.toString().trim().split('\r');
-        //console.log(portName + ': ' + datas[0]);
         datas.forEach(function (entry) {
 
             //starts with manufacturer imei:
