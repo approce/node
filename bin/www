@@ -8,7 +8,7 @@ var app   = require('../app');
 var debug = require('debug')('message-client:server');
 var http  = require('http');
 
-var config = require('../config.json')[app.get('env')];
+var port = require('../properties').port;
 
 /**
  * Create HTTP server.
@@ -20,7 +20,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(config.port);
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
 
