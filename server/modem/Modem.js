@@ -1,78 +1,47 @@
-var log       = require('winston');
-var modem     = require('modem').Modem();
-var ussd      = require('./ussd');
-var properties = require('../../properties').modem;
+var EventEmitter = require('events').EventEmitter;
+var Modem        = require('modem').Modem;
+var log          = require('winston');
+var ussd         = require('./ussd');
 
-var number;
-var messageListener;
-var numberListener;
+function createModem(port) {
+    var modem = Modem();
 
-function newMessage(sms) {
-    log.debug('New sms received. Index:', sms.indexes[0]);
+    modem.start   = start.bind(null, modem, port);
+    modem.restart = restart.bind(null, modem);
 
-    var message = createMessage(number, sms);
+    modem.on('sms received', newMessage);
+    modem.on('memory full', memoryFull);
 
-    messageListener(message);
-
-    deleteMessages(function (i) {
-        return i == sms.indexes[0];
-    });
+    return modem;
 }
 
-function createMessage(number, sms) {
-    sms.text = sms.text.replace(/\0/g, '');
-    sms.id   = sms.time.toString().hashCode();
-    return {
-        id        : sms.id,
-        sim_id    : number,
-        originator: sms.sender,
-        received  : sms.time,
-        text      : sms.text
-    };
-}
-
-function deleteMessages(cause) {
-    modem.getMessages(function (array) {
-        array.forEach(function (item, i) {
-            if (cause(i, item)) {
-                log.debug('Deleting message. Index:', i);
-                modem.deleteMessage(i);
-            }
-        })
-    });
-}
-
-function memoryFull() {
-    var count = 5;
-    log.error('Memory Full! Deleting first %d messages', count);
-    deleteMessages(function (i) {
-        return i < count;
-    });
-}
-
-function startNumberDetecting() {
-    log.debug('Start USSD command for detecting number.');
-
-    ussd.process(modem, properties.initCommand, function (num) {
-        log.debug('Received response for USSD ression. ', num);
-        number = num;
-        numberListener(number);
-    });
-}
-
-function start() {
+function start(modem, port) {
     log.debug('Creating modem connection.');
 
-    modem.open(properties.port, function () {
+    modem.open(port, function () {
+        modem.getMessages(function (array) {
+            array.forEach(function (sms) {
+                console.log(sms);
+            });
+        });
         log.debug('Modem connection successfully established.');
 
-        startNumberDetecting();
-        modem.on('sms received', newMessage);
-        modem.on('memory full', memoryFull)
+        startNumberDetecting(modem);
     });
 }
 
-function restart() {
+function startNumberDetecting(modem) {
+    log.debug('Start USSD session for number detection.');
+
+    //TODO properly get activation code
+    ussd.process(modem, "*205#", function (num) {
+        log.debug('Received response for USSD session.', num);
+        modem.number = num;
+        modem.emit('c number detected', num);
+    });
+}
+
+function restart(modem) {
     var restartCommand = 'AT+CFUN=1,1';
     var delay          = 13000;
 
@@ -96,14 +65,48 @@ function restart() {
     }.bind(this), true);
 }
 
-module.exports = {
-    setMessageListener: function (callback) {
-        messageListener = callback;
-    },
-    setNumberListener : function (callback) {
-        numberListener = callback;
-    },
+function newMessage(sms) {
+    log.debug('New sms received.', sms);
 
-    start  : start,
-    restart: restart
-};
+    var message = createMessage(this.number, sms);
+    this.emit('c sms received', message);
+
+    modem.deleteMessage(sms.indexes[0]);
+}
+
+function createMessage(number, sms) {
+    sms.text = sms.text.replace(/\0/g, '');
+    sms.id   = sms.time.toString().hashCode();
+    return {
+        id        : sms.id,
+        sim_id    : number,
+        originator: sms.sender,
+        received  : sms.time,
+        text      : sms.text
+    };
+}
+
+function memoryFull(hz) {
+    //TODO should be investigated.
+    console.log(hz);
+    var modem = this,
+        count = 5;
+
+    log.error('Memory Full! Deleting first %d messages', count);
+
+    this.getMessages(function (array) {
+        console.log(array);
+        array.reverse().forEach(function (sms, i) {
+            if (i >= count) {
+                return;
+            }
+            var index = sms.indexes[0];
+
+            log.debug('Deleting message. Index:', index);
+
+            modem.deleteMessage(index);
+        })
+    });
+}
+
+module.exports = createModem;
