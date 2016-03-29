@@ -1,20 +1,33 @@
 var log           = require('winston');
 var Modem         = require('../server/modem/Modem');
 var outController = require('../routes/outController');
-var modemFinder   = require('../server/service/ModemFinder');
+var portFinder    = require('../server/service/PortFinder')();
 var props         = require('../properties');
 var Promise       = require('promise');
 
 function start() {
+    portFinder.search();
+    portFinder.get(36262309).then(function (port) {
+        console.log('horray', port);
+    });
+    portFinder.get(32781500).then(function (port) {
+        console.log('horray', port);
+    });
+    portFinder.get(1231235).then(function (port) {
+    }).catch(function () {
+        console.log('so sad!');
+    });
+    return;
+
     props.nodes.forEach(function (node) {
         var providerPromise  = outController.getProvider(node.provider);
-        var modemPortPromise = modemFinder.find(node.modem);
+        var modemPortPromise = portFinder.find(node.modem);
 
-        Promise.all([providerPromise, modemPortPromise]).then(startModem.bind(null, node));
+        Promise.all([providerPromise, modemPortPromise]).then(startNode.bind(null, node));
     });
 }
 
-function startModem(node, res) {
+function startNode(node, res) {
     var provider = res[0],
         port     = res[1],
         modem    = new Modem(port, provider.init_command);

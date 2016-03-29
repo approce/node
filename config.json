@@ -1,21 +1,18 @@
 {
   "development": {
-    "nodeId"   : "Faith",
     "port"     : 3003,
-    "modemPort": "/dev/tty.HUAWEIMobile-Pcui",
     "serverUrl": "http://localhost:3001",
     "logLevel" : "silly",
-    "modem"    : {
-      "port"       : "/dev/tty.HUAWEIMobile-Pcui",
-      "operatorId" : 1,
-      "initCommand": "*205#",
-      "autoStart"  : true
-    },
     "nodes"    : [
       {
         "id"      : "Faith",
         "provider": 1,
         "modem"   : 36262309
+      },
+      {
+        "id"      : "Will",
+        "provider": 1,
+        "modem"   : 32781500
       }
     ]
   }
