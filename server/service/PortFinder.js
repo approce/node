@@ -8,7 +8,7 @@ function constructor() {
     var promises    = {};
 
     return {
-        get   : get,
+        find  : find,
         search: portProcessor.search.bind(null, portFounded)
     };
 
@@ -17,7 +17,7 @@ function constructor() {
         promises[imei] && promises[imei].resolve(port);
     }
 
-    function get(imei) {
+    function find(imei) {
         return new Promise(function (resolve, reject) {
             var matchedPort = imeiPortMap[imei];
 
