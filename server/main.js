@@ -1,19 +1,19 @@
 var log           = require('winston');
-var Modem         = require('../server/modem/Modem');
+var Modem         = require('./modem/Modem');
 var outController = require('../routes/outController');
-var portFinder    = require('../server/service/PortFinder')();
-var props         = require('../properties');
+var portFinder    = require('./service/PortFinder')();
+var props         = require('./properties');
 var Promise       = require('promise');
 
 function start() {
     portFinder.search();
-    portFinder.get(36262309).then(function (port) {
+    portFinder.find(36262309).then(function (port) {
         console.log('horray', port);
     });
-    portFinder.get(32781500).then(function (port) {
+    portFinder.find(32781500).then(function (port) {
         console.log('horray', port);
     });
-    portFinder.get(1231235).then(function (port) {
+    portFinder.find(1231235).then(function (port) {
     }).catch(function () {
         console.log('so sad!');
     });
@@ -47,22 +47,3 @@ function startNode(node, res) {
 }
 
 module.exports = start;
-
-//
-//var number;
-//Modem.setNumberListener(function (num) {
-//    number = num;
-//    outController.update(number);
-//    log.info('Initialized new SIM. Number:', num);
-//});
-//
-////modem.start();
-//
-//inController.onCommand(function (command) {
-//    if (command == "change sim") {
-//        log.info('Restarting modem.');
-//        Modem.restart();
-//    }
-//});
-//
-//outController.connect({nodeId: nodeId});

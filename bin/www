@@ -8,7 +8,7 @@ var app   = require('../app');
 var debug = require('debug')('message-client:server');
 var http  = require('http');
 
-var port = require('../properties').port;
+var port = require('../server/properties').port;
 
 /**
  * Create HTTP server.

@@ -1,6 +1,6 @@
 var log       = require('winston');
 var request   = require('request-promise');
-var serverUrl = require('../properties').serverUrl;
+var serverUrl = require('../server/properties').serverUrl;
 
 function connect(nodeInfo) {
 }
