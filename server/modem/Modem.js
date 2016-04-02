@@ -1,7 +1,7 @@
 var EventEmitter = require('events').EventEmitter;
 var Modem        = require('modem').Modem;
 var log          = require('winston');
-var ussd         = require('./ussd');
+var Ussd         = require('./Ussd');
 
 function createModem(port, initCommand) {
     var modem = Modem();
@@ -29,7 +29,7 @@ function start(modem, port, initCommand) {
 function startNumberDetecting(modem, initCommand) {
     log.debug('Start USSD session for number detection.');
 
-    ussd.process(modem, initCommand, function (num) {
+    new Ussd(modem).start(initCommand).then(function (num) {
         log.debug('Received response for USSD session.', num);
         modem.number = num;
         modem.emit('c number detected', num);
