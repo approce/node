@@ -2,7 +2,7 @@ var log     = require('winston');
 var Promise = require('promise');
 
 var props         = require('./properties');
-var outController = require('../routes/outController');
+var outController = require('./routes/outController');
 var nodeBuilder   = require('./service/NodeBuilder')();
 
 function start() {

@@ -1,12 +1,6 @@
 var log       = require('winston');
 var request   = require('request-promise');
-var serverUrl = require('../server/properties').serverUrl;
-
-function connect(nodeInfo) {
-}
-
-function update(number) {
-}
+var serverUrl = require('../properties').serverUrl;
 
 function pushMessage(nodeId, message) {
     return post('nodes/' + nodeId + '/messages', message);
@@ -36,8 +30,6 @@ function post(uri, body) {
 }
 
 module.exports = {
-    connect    : connect,
-    update     : update,
     pushMessage: pushMessage,
     getProvider: getProvider,
     initSim    : initSim
