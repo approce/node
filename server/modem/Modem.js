@@ -9,9 +9,6 @@ function createModem(port, initCommand) {
     modem.start   = start.bind(null, modem, port, initCommand);
     modem.restart = restart.bind(null, modem);
 
-    modem.on('sms received', newMessage.bind(modem));
-    modem.on('memory full', memoryFull);
-
     return modem;
 }
 
@@ -19,11 +16,30 @@ function start(modem, port, initCommand) {
     log.debug('Creating modem connection.');
 
     modem.open(port, function () {
-        //checkStorage(modem);
+        modem.on('sms received', newMessage.bind(modem));
+        modem.on('memory full', memoryFull);
+
+        setMessageStorage(modem);
+        //deleteAllMessages(modem);
+        checkStorage(modem);
         log.debug('Modem connection successfully established.');
 
         startNumberDetecting(modem, initCommand);
     });
+}
+
+function deleteAllMessages(modem) {
+    modem.getMessages(function (res) {
+        console.log(res);
+        console.log('deleting ', res.length);
+        res.forEach(function (message) {
+            modem.deleteMessage(message.indexes[0]);
+        });
+    });
+}
+
+function setMessageStorage(modem) {
+    modem.execute('AT+CPMS="MT","MT","MT"');
 }
 
 function startNumberDetecting(modem, initCommand) {
@@ -78,7 +94,7 @@ function newMessage(sms) {
 function createMessage(number, sms) {
     sms.text = sms.text.replace(/\0/g, '');
     return {
-        simId     : number,
+        sim_id    : number,
         originator: sms.sender,
         received  : sms.time,
         text      : sms.text

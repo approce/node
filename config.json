@@ -8,11 +8,6 @@
         "id"      : "Faith",
         "provider": 1,
         "modem"   : 36262309
-      },
-      {
-        "id"      : "Will",
-        "provider": 1,
-        "modem"   : 32781500
       }
     ]
   }
