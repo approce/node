@@ -15,11 +15,11 @@ function constructor() {
 
 function build(nodeConfig) {
     return new Promise(function (resolve, reject) {
-        var provider  = outController.getProvider(nodeConfig.provider);
+        var initNode         = outController.initNode(nodeConfig.id);
         var modemPortPromise = portFinder.find(nodeConfig.modem);
 
-        Promise.all([provider, modemPortPromise]).then(function (res) {
-            nodeConfig.providerInitCommand = res[0].init_command;
+        Promise.all([initNode, modemPortPromise]).then(function (res) {
+            nodeConfig.providerInitCommand = res[0].provider.init_command;
             nodeConfig.modemPort           = res[1];
 
             var node = new Node(nodeConfig);

@@ -5,9 +5,8 @@
     "logLevel" : "silly",
     "nodes"    : [
       {
-        "id"      : "Faith",
-        "provider": 1,
-        "modem"   : 36262309
+        "name" : "FAITH",
+        "modem": 36262309
       }
     ]
   }

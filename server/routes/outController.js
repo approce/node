@@ -2,16 +2,20 @@ var log       = require('winston');
 var request   = require('request-promise');
 var serverUrl = require('../properties').serverUrl;
 
-function pushMessage(nodeId, message) {
-    return post('nodes/' + nodeId + '/messages', message);
+function pushMessage(nodeName, message) {
+    return post('nodes/' + nodeName + '/messages', message);
 }
 
 function getProvider(providerId) {
     return get('providers/' + providerId);
 }
 
-function initSim(nodeId, providerId, simId) {
-    return post('nodes/' + nodeId + '/sim/' + providerId + '/' + simId);
+function initNode(nodeName) {
+    return post('nodes/' + nodeName + '/');
+}
+
+function initSim(nodeName, simId) {
+    return post('nodes/' + nodeName + '/sim/' + simId);
 }
 
 function get(uri) {
@@ -32,5 +36,6 @@ function post(uri, body) {
 module.exports = {
     pushMessage: pushMessage,
     getProvider: getProvider,
+    initNode   : initNode,
     initSim    : initSim
 };

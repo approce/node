@@ -9,16 +9,17 @@ function start() {
     props.nodes.forEach(function (nodeConfig) {
         nodeBuilder.build(nodeConfig).then(function (node) {
 
-            console.log('initialized!');
             node.start();
 
             node.on('number:detected', function (config) {
-                outController.initSim(config.id, config.provider, config.simId);
+                outController.initSim(config.name, config.simId);
             });
 
             node.on('message:received', function (config, message) {
-                outController.pushMessage(config.id, message)
-            })
+                outController.pushMessage(config.name, message)
+            });
+
+            outController.initNode(config.name);
         });
     });
 }
