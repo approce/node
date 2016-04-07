@@ -30,4 +30,4 @@ function build(nodeConfig) {
     });
 }
 
-module.exports = constructor;
+module.exports = constructor();

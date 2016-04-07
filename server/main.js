@@ -4,7 +4,7 @@ var schedule = require('node-schedule');
 
 var props            = require('./properties');
 var outController    = require('./routes/outController');
-var nodeBuilder      = require('./service/NodeBuilder')();
+var nodeBuilder      = require('./service/NodeBuilder');
 var nodesStorage     = require('./service/NodesStorage');
 var commandsExecutor = require('./service/CommandsExecutor');
 
