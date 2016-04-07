@@ -23,6 +23,7 @@ function start() {
                 outController.pushMessage(config.name, message)
             });
 
+            //TODO investigate node lifecycle & proper events:
             nodesStorage.emit('nodes:add', node);
             outController.initNode(config.name);
         });

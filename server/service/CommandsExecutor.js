@@ -61,6 +61,7 @@ function executeCommands(nodes, commands) {
 }
 
 function executeCommand(node, command) {
+    //TODO process command:
     console.log('HERE', node.id, command);
 }
 
