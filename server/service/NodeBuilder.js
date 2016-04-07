@@ -24,7 +24,9 @@ function build(nodeConfig) {
 
             var node = new Node(nodeConfig);
             resolve(node);
-        });
+        }).catch(function (err) {
+            console.error(err);
+        })
     });
 }
 

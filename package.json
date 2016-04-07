@@ -13,11 +13,11 @@
     "jade"           : "~1.11.0",
     "modem"          : "approce/modem",
     "morgan"         : "~1.6.1",
+    "node-schedule"  : "^1.1.0",
     "promise"        : "^7.1.1",
     "request"        : "^2.69.0",
     "request-promise": "^2.0.1",
     "serialport"     : "^2.0.6",
-    "serve-favicon"  : "~2.3.0",
     "winston"        : "^2.1.1"
   }
 }

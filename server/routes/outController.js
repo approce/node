@@ -4,14 +4,19 @@ var serverUrl = require('../properties').serverUrl;
 
 
 module.exports = {
-    initNode   : function initNode(nodeName) {
-        return post('nodes/' + nodeName + '/');
+    initNode: function initNode(nodeId) {
+        return post('nodes/' + nodeId + '/');
     },
-    initSim    : function initSim(nodeName, simId) {
-        return post('nodes/' + nodeName + '/sim/' + simId);
+    initSim : function initSim(nodeId, simId) {
+        return post('nodes/' + nodeId + '/sim/' + simId);
     },
-    pushMessage: function pushMessage(nodeName, message) {
-        return post('nodes/' + nodeName + '/messages', message);
+
+    pushMessage: function pushMessage(nodeId, message) {
+        return post('nodes/' + nodeId + '/messages', message);
+    },
+
+    getCommands: function (nodes) {
+        return post('/nodes/commands', nodes);
     }
 };
 
