@@ -11,7 +11,11 @@ function constructor() {
     storage.on('nodes:add', addNode);
 
     function get() {
-        return nodes;
+        //TODO mock:
+        return {
+            FAITH: null,
+            WILL : null
+        };
     }
 
     function addNode(node) {

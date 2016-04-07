@@ -6,6 +6,7 @@ function constructor(config) {
     var node  = new EventEmitter(),
         modem = Modem(config.modemPort, config.providerInitCommand);
 
+    node.id     = config.id;
     node.config = config;
     node.start  = modem.start;
 

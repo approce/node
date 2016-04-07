@@ -6,7 +6,7 @@ var props            = require('./properties');
 var outController    = require('./routes/outController');
 var nodeBuilder      = require('./service/NodeBuilder')();
 var nodesStorage     = require('./service/NodesStorage');
-var commandsExecutor = require('./service/CommandsExecutor')();
+var commandsExecutor = require('./service/CommandsExecutor');
 
 function start() {
     props.nodes.forEach(function (nodeConfig) {

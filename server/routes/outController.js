@@ -15,8 +15,9 @@ module.exports = {
         return post('nodes/' + nodeId + '/messages', message);
     },
 
-    getCommands: function (nodes) {
-        return post('/nodes/commands', nodes);
+    getCommands: function (nodesIds) {
+        //TODO support array with node ids in query.
+        return get('nodes/commands');
     }
 };
 
