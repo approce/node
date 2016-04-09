@@ -11,21 +11,19 @@ var commandsExecutor = require('./service/CommandsExecutor');
 function start() {
     props.nodes.forEach(function (nodeConfig) {
         nodeBuilder.build(nodeConfig).then(function (node) {
-
             node.start();
 
-            //TODO:building/configuring nodes & setting listeners -isn't that the same thing?
             node.on('number:detected', function (config) {
-                outController.initSim(config.id, config.simId);
+                outController.initSim(config.id, config.simId).then(function () {
+                    commandsExecutor.processCommand(node);
+                });
             });
 
             node.on('message:received', function (config, message) {
                 outController.pushMessage(config.name, message)
             });
 
-            //TODO investigate node lifecycle & proper events:
             nodesStorage.emit('nodes:add', node);
-            outController.initNode(config.name);
         });
     });
     commandsExecutor.schedule();

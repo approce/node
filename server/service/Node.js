@@ -19,7 +19,14 @@ function constructor(config) {
         node.emit('message:received', node.config, message);
     });
 
+    node.on('sim:next', simNext);
+
     return node;
+}
+
+function simNext() {
+    //TODO start 28BYJ movement
+    console.log('executing command sim:next');
 }
 
 module.exports = constructor;

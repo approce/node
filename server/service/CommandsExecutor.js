@@ -11,9 +11,6 @@ function constructor() {
 
     var scheduled = false;
 
-    //TODO do not listen to add event. Listen to a kind of 'number inited'
-    nodesStorage.on('nodes:add', processCommandForSingleNode);
-
     function scheduleFetches() {
         if (!scheduled) {
             createScheduler();
@@ -24,7 +21,8 @@ function constructor() {
     }
 
     return {
-        schedule: scheduleFetches
+        processCommand: processCommandForSingleNode,
+        schedule      : scheduleFetches
     };
 }
 
@@ -61,8 +59,10 @@ function executeCommands(nodes, commands) {
 }
 
 function executeCommand(node, command) {
-    //TODO process command:
-    console.log('HERE', node.id, command);
+    //todo replace to case:
+    if (command === 'sim:next') {
+        node.emit('sim:next');
+    }
 }
 
 module.exports = constructor();
