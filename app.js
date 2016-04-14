@@ -6,7 +6,6 @@ var bodyParser   = require('body-parser');
 var app          = express();
 
 var config = require('./config.json')[app.get('env')];
-var socket =  require('./server/routes/outSocket')();
 
 //configure logging:
 require('winston').level = config.logLevel;

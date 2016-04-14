@@ -2,31 +2,28 @@ var log      = require('winston');
 var Promise  = require('promise');
 var schedule = require('node-schedule');
 
-var props            = require('./properties');
-var outController    = require('./routes/outController');
-var nodeBuilder      = require('./service/NodeBuilder');
-var nodesStorage     = require('./service/NodesStorage');
-var commandsExecutor = require('./service/CommandsExecutor');
+var props        = require('./properties');
+var storeBuilder = require('./store/StoreBuilder');
+var socket       = require('./routes/outSocket')();
 
 function start() {
-    props.nodes.forEach(function (nodeConfig) {
-        nodeBuilder.build(nodeConfig).then(function (node) {
-            node.start();
+    props.nodes.forEach(function (storeConfig) {
+        var configPromise = socket.getStoreConfig(storeConfig.id);
 
-            node.on('number:detected', function (config) {
-                outController.initSim(config.id, config.simId).then(function () {
-                    commandsExecutor.processCommand(node);
-                });
+        storeBuilder.build(configPromise, storeConfig).then(function (store) {
+            store.start();
+
+            socket.storeInit(store.id);
+
+            store.on('number:detected', function (config) {
+                socket.simInit(config.id, config.simId);
             });
 
-            node.on('message:received', function (config, message) {
-                outController.pushMessage(config.name, message)
+            store.on('message:received', function (config, message) {
+                socket.pushMessage(config.id, message);
             });
-
-            nodesStorage.emit('nodes:add', node);
         });
     });
-    commandsExecutor.schedule();
 }
 
 module.exports = start;
