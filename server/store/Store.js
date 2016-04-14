@@ -1,27 +1,27 @@
 var EventEmitter = require('events').EventEmitter;
 
-var Modem = require('../modem/Modem');
+var Modem = require('./modem/Modem');
 
 function constructor(config) {
-    var node  = new EventEmitter(),
+    var store  = new EventEmitter(),
         modem = Modem(config.modemPort, config.providerInitCommand);
 
-    node.id     = config.id;
-    node.config = config;
-    node.start  = modem.start;
+    store.id     = config.id;
+    store.config = config;//needed?
+    store.start  = modem.start;
 
     modem.on('c number detected', function (simId) {
-        node.config.simId = simId;
-        node.emit('number:detected', node.config);
+        store.config.simId = simId;
+        store.emit('number:detected', store.config);
     });
 
     modem.on('c sms received', function (message) {
-        node.emit('message:received', node.config, message);
+        store.emit('message:received', store.config, message);
     });
 
-    node.on('sim:next', simNext);
+    store.on('sim:next', simNext);
 
-    return node;
+    return store;
 }
 
 function simNext() {
